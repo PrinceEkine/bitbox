@@ -12,4 +12,5 @@ urlpatterns = [
     path('series/<int:series_id>/season/<int:season_number>/', views.season_detail, name='season_detail'),
     path('series/<int:series_id>/season/<int:season_number>/episode/<int:episode_number>/', views.episode_detail, name='episode_detail'),
     path('episode/<int:episode_id>/download/', views.download_episode, name='download_episode'),
+    path('test/', views.test_view, name='test_view'),
 ]

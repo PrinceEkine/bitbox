@@ -93,3 +93,12 @@ def download_episode(request, episode_id):
     response = FileResponse(episode.video_file.open(), content_type='video/mp4')
     response['Content-Disposition'] = f'attachment; filename="{episode.get_episode_code()} - {episode.title}.{episode.file_format.lower()}"'
     return response
+
+def test_view(request):
+    """Simple test view to check if deployment works"""
+    return render(request, 'home.html', {
+        'featured_movies': [],
+        'featured_series': [],
+        'latest_movies': [],
+        'search_query': ''
+    })
