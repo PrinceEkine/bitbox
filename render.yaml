@@ -4,9 +4,8 @@ services:
     env: python
     plan: free
     branch: main
-    rootDirectory: .
-    buildCommand: "./build.sh"
-    startCommand: "python manage.py runserver 0.0.0.0:8000"
+    buildCommand: "chmod +x build.sh && ./build.sh"
+    startCommand: "gunicorn bitbox_project.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: DEBUG
         value: "False"
