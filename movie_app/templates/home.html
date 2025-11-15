@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitBox - Download Movies & TV Shows</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f0f0f; color: white; }
+        .navbar { background: #1a1a1a; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #e50914; }
+        .search-bar { padding: 0.5rem; border: none; border-radius: 4px; width: 300px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .section-title { margin: 2rem 0 1rem 0; font-size: 1.5rem; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .content-card { background: #1a1a1a; border-radius: 8px; overflow: hidden; transition: transform 0.3s; }
+        .content-card:hover { transform: scale(1.05); }
+        .content-poster { width: 100%; height: 300px; object-fit: cover; }
+        .content-info { padding: 1rem; }
+        .content-title { font-weight: bold; margin-bottom: 0.5rem; }
+        .content-meta { font-size: 0.8rem; color: #ccc; margin: 0.2rem 0; }
+        .btn { display: inline-block; padding: 0.5rem 1rem; background: #e50914; color: white; text-decoration: none; border-radius: 4px; margin: 0.25rem; }
+        .btn-download { background: #28a745; }
+        .btn-secondary { background: #333; }
+        .download-stats { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">BITBOX DOWNLOADS</div>
+        <form method="GET" action="{% url 'home' %}">
+            <input type="text" name="q" placeholder="Search movies and series..." class="search-bar" value="{{ search_query }}">
+        </form>
+    </nav>
+
+    <div class="container">
+        {% if search_query %}
+            <h2>Search Results for "{{ search_query }}"</h2>
+        {% else %}
+            <h2>Featured Movies</h2>
+        {% endif %}
+
+        <div class="content-grid">
+            {% for movie in featured_movies %}
+            <div class="content-card">
+                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="content-poster">
+                <div class="content-info">
+                    <div class="content-title">{{ movie.title }} ({{ movie.year }})</div>
+                    <div class="content-meta">Rating: {{ movie.rating }}/10</div>
+                    <div class="content-meta">{{ movie.get_duration_formatted }} • {{ movie.quality }}</div>
+                    <div class="content-meta">{{ movie.file_size }} • {{ movie.file_format }}</div>
+                    <div class="download-stats">📥 {{ movie.download_count }} downloads</div>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn">Details</a>
+                    <a href="{% url 'download_movie' movie.id %}" class="btn btn-download">Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title">Popular Downloads</h2>
+        <div class="content-grid">
+            {% for movie in popular_movies %}
+            <div class="content-card">
+                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="content-poster">
+                <div class="content-info">
+                    <div class="content-title">{{ movie.title }}</div>
+                    <div class="download-stats">📥 {{ movie.download_count }} downloads</div>
+                    <a href="{% url 'download_movie' movie.id %}" class="btn btn-download">Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title">TV Series</h2>
+        <div class="content-grid">
+            {% for series in featured_series %}
+            <div class="content-card">
+                <img src="{{ series.poster.url }}" alt="{{ series.title }}" class="content-poster">
+                <div class="content-info">
+                    <div class="content-title">{{ series.title }}</div>
+                    <div class="content-meta">{{ series.get_years }}</div>
+                    <a href="{% url 'series_detail' series.id %}" class="btn">Browse Episodes</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not search_query %}
+        <h2 class="section-title">Latest Additions</h2>
+        <div class="content-grid">
+            {% for movie in latest_movies %}
+            <div class="content-card">
+                <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="content-poster">
+                <div class="content-info">
+                    <div class="content-title">{{ movie.title }}</div>
+                    <a href="{% url 'download_movie' movie.id %}" class="btn btn-download">Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} - BitBox</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f0f0f; color: white; }
+        .navbar { background: #1a1a1a; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #e50914; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .movie-header { display: flex; gap: 2rem; margin-bottom: 2rem; }
+        .movie-poster { width: 300px; height: 450px; object-fit: cover; border-radius: 8px; }
+        .movie-info { flex: 1; }
+        .movie-title { font-size: 2rem; margin-bottom: 1rem; }
+        .movie-meta { color: #ccc; margin-bottom: 1rem; line-height: 1.6; }
+        .movie-description { line-height: 1.6; margin-bottom: 2rem; }
+        .btn { display: inline-block; padding: 0.8rem 1.5rem; background: #e50914; color: white; text-decoration: none; border-radius: 4px; margin-right: 1rem; font-size: 1.1rem; }
+        .btn-download { background: #28a745; }
+        .similar-movies { margin-top: 3rem; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .content-card { background: #1a1a1a; border-radius: 8px; overflow: hidden; }
+        .content-poster { width: 100%; height: 300px; object-fit: cover; }
+        .content-info { padding: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">BITBOX DOWNLOADS</a>
+    </nav>
+
+    <div class="container">
+        <div class="movie-header">
+            <img src="{{ movie.poster.url }}" alt="{{ movie.title }}" class="movie-poster">
+            <div class="movie-info">
+                <h1 class="movie-title">{{ movie.title }} ({{ movie.year }})</h1>
+                <div class="movie-meta">
+                    <strong>Director:</strong> {{ movie.director|default:"Not specified" }}<br>
+                    <strong>Duration:</strong> {{ movie.get_duration_formatted }}<br>
+                    <strong>Rating:</strong> {{ movie.rating }}/10<br>
+                    <strong>Quality:</strong> {{ movie.quality }}<br>
+                    <strong>Format:</strong> {{ movie.file_format }}<br>
+                    <strong>File Size:</strong> {{ movie.file_size }}<br>
+                    <strong>Downloads:</strong> {{ movie.download_count }}<br>
+                    <strong>Genres:</strong> 
+                    {% for genre in movie.genres.all %}
+                        {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        No genres specified
+                    {% endfor %}
+                </div>
+                <p class="movie-description">{{ movie.description }}</p>
+                <div class="action-buttons">
+                    <a href="{% url 'download_movie' movie.id %}" class="btn btn-download">Download Movie</a>
+                    <a href="{% url 'home' %}" class="btn">Back to Home</a>
+                </div>
+            </div>
+        </div>
+
+        {% if similar_movies %}
+        <div class="similar-movies">
+            <h2>Similar Movies</h2>
+            <div class="content-grid">
+                {% for similar in similar_movies %}
+                <div class="content-card">
+                    <img src="{{ similar.poster.url }}" alt="{{ similar.title }}" class="content-poster">
+                    <div class="content-info">
+                        <div class="content-title">{{ similar.title }} ({{ similar.year }})</div>
+                        <a href="{% url 'movie_detail' similar.id %}" class="btn">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ season.series.title }} - Season {{ season.season_number }} - BitBox</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f0f0f; color: white; }
+        .navbar { background: #1a1a1a; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #e50914; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .season-header { display: flex; gap: 2rem; margin-bottom: 2rem; }
+        .season-poster { width: 300px; height: 450px; object-fit: cover; border-radius: 8px; }
+        .season-info { flex: 1; }
+        .season-title { font-size: 2rem; margin-bottom: 1rem; }
+        .episode-list { display: grid; gap: 0.5rem; }
+        .episode-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #1a1a1a; border-radius: 8px; }
+        .btn { display: inline-block; padding: 0.5rem 1rem; background: #e50914; color: white; text-decoration: none; border-radius: 4px; }
+        .btn-download { background: #28a745; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">BITBOX DOWNLOADS</a>
+    </nav>
+
+    <div class="container">
+        <div class="season-header">
+            {% if season.poster %}
+            <img src="{{ season.poster.url }}" alt="Season {{ season.season_number }}" class="season-poster">
+            {% else %}
+            <img src="{{ season.series.poster.url }}" alt="Season {{ season.season_number }}" class="season-poster">
+            {% endif %}
+            <div class="season-info">
+                <h1 class="season-title">{{ season.series.title }} - Season {{ season.season_number }}</h1>
+                {% if season.title %}<h2>{{ season.title }}</h2>{% endif %}
+                <p>{{ season.episode_count }} episodes</p>
+                <a href="{% url 'series_detail' season.series.id %}" class="btn">Back to Series</a>
+            </div>
+        </div>
+
+        <h2>Episodes</h2>
+        <div class="episode-list">
+            {% for episode in season.episodes.all %}
+            <div class="episode-item">
+                <div>
+                    <strong>{{ episode.get_episode_code }}</strong> - {{ episode.title }}
+                    <br>
+                    <small>{{ episode.get_duration_formatted }} • {{ episode.quality }} • {{ episode.file_size }}</small>
+                    {% if episode.description %}<br><small>{{ episode.description|truncatewords:20 }}</small>{% endif %}
+                </div>
+                <a href="{% url 'download_episode' episode.id %}" class="btn btn-download">Download</a>
+            </div>
+            {% empty %}
+            <p>No episodes available for this season.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Series - BitBox</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f0f0f; color: white; }
+        .navbar { background: #1a1a1a; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #e50914; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .content-card { background: #1a1a1a; border-radius: 8px; overflow: hidden; }
+        .content-poster { width: 100%; height: 300px; object-fit: cover; }
+        .content-info { padding: 1rem; }
+        .content-title { font-weight: bold; margin-bottom: 0.5rem; }
+        .content-meta { font-size: 0.8rem; color: #ccc; margin: 0.2rem 0; }
+        .btn { display: inline-block; padding: 0.5rem 1rem; background: #e50914; color: white; text-decoration: none; border-radius: 4px; margin: 0.25rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">BITBOX DOWNLOADS</a>
+    </nav>
+
+    <div class="container">
+        <h1>All TV Series ({{ series.count }})</h1>
+        <div class="content-grid">
+            {% for series_item in series %}
+            <div class="content-card">
+                <img src="{{ series_item.poster.url }}" alt="{{ series_item.title }}" class="content-poster">
+                <div class="content-info">
+                    <div class="content-title">{{ series_item.title }}</div>
+                    <div class="content-meta">{{ series_item.get_years }}</div>
+                    <div class="content-meta">{{ series_item.total_seasons }} seasons • {{ series_item.total_episodes }} episodes</div>
+                    <a href="{% url 'series_detail' series_item.id %}" class="btn">Browse Episodes</a>
+                </div>
+            </div>
+            {% empty %}
+            <p>No series available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
